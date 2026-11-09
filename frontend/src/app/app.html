@@ -1,0 +1,35 @@
+<header class="topbar"><span class="brand-mark" aria-hidden="true">↗</span><span>Frota <strong>em análise</strong></span></header>
+<main>
+  <div class="intro"><p class="eyebrow">MONITORAMENTO DE VELOCIDADE</p><h1>Das leituras às ocorrências.</h1><p>Envie o arquivo de rastreamento para identificar episódios de excesso e os veículos que precisam de atenção.</p></div>
+  <section class="panel upload" aria-labelledby="upload-titulo">
+    <h2 id="upload-titulo">Analisar arquivo</h2><p id="arquivo-ajuda">CSV em UTF-8, separado por ponto e vírgula, com cabeçalho. Máximo de 5 MB.</p>
+    <form (submit)="analisar($event)" [attr.aria-busy]="carregando()">
+      <div class="file-field"><label for="arquivo">Arquivo de leituras</label><input id="arquivo" type="file" accept=".csv,text/csv" aria-describedby="arquivo-ajuda" [disabled]="carregando()" (change)="selecionar($event)"></div>
+      <button type="submit" [disabled]="!arquivo() || carregando()">{{ carregando() ? 'Analisando…' : 'Analisar arquivo' }}</button>
+    </form>
+    @if (carregando()) { <p role="status">Processando leituras e calculando episódios…</p> }
+    @if (erro()) { <p class="error" role="alert">{{ erro() }}</p> }
+  </section>
+
+  @if (resultado(); as analise) {
+    <div aria-live="polite"><h2 class="sr-only">Resumo da análise</h2><div class="summary">
+      <div class="metric"><span>Linhas lidas</span><strong>{{ analise.resumo.linhasLidas }}</strong></div>
+      <div class="metric"><span>Linhas válidas</span><strong>{{ analise.resumo.linhasValidas }}</strong></div>
+      <div class="metric"><span>Episódios de excesso</span><strong>{{ analise.resumo.totalEpisodios }}</strong></div>
+      <div class="metric"><span>Linhas inválidas</span><strong>{{ analise.linhasInvalidas.length }}</strong></div>
+    </div></div>
+    <app-ranking [ranking]="analise.ranking" />
+    <app-episodios [episodios]="analise.episodios" />
+    <section class="panel" aria-labelledby="invalidas-titulo">
+      <h2 id="invalidas-titulo">Linhas inválidas</h2><p>Estas linhas foram ignoradas. A numeração inclui o cabeçalho na linha 1.</p>
+      @if (analise.linhasInvalidas.length) {
+        <div class="table-scroll"><table><caption class="sr-only">Erros encontrados no arquivo</caption><thead><tr><th scope="col">Linha</th><th scope="col">Motivo</th></tr></thead>
+          <tbody>@for (linha of analise.linhasInvalidas; track linha.linha) { <tr><th scope="row">{{ linha.linha }}</th><td>{{ linha.motivo }}</td></tr> }</tbody>
+        </table></div>
+      } @else { <p class="success">Todas as linhas de dados são válidas.</p> }
+    </section>
+  } @else if (!carregando() && !erro()) {
+    <p class="empty-state">O resumo, o ranking e os episódios aparecerão aqui após a análise.</p>
+  }
+  <footer>Excesso: mais de 5 km/h acima do limite. Os dados são processados em memória, sem persistência.</footer>
+</main>

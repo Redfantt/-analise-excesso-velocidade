@@ -1,0 +1,16 @@
+{
+  "name": "analise-frota-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "start": "ng serve --host 127.0.0.1", "build": "ng build", "test": "ng test --watch=false" },
+  "dependencies": {
+    "@angular/common": "21.2.26", "@angular/compiler": "21.2.26", "@angular/core": "21.2.26",
+    "@angular/platform-browser": "21.2.26", "rxjs": "~7.8.2", "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "21.2.29", "@angular/cli": "21.2.29", "@angular/compiler-cli": "21.2.26",
+    "typescript": "~5.9.3", "vitest": "^4.0.8", "jsdom": "^27.1.0"
+  },
+  "overrides": { "rollup": "npm:@rollup/wasm-node@4.62.2" },
+  "engines": { "node": "^20.19.0 || ^22.12.0 || ^24.0.0" }
+}
